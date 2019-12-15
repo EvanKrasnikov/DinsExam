@@ -1,13 +1,14 @@
 package ru.geographer29;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import ru.geographer29.cli.Parser;
+import ru.geographer29.handler.PacketHandler;
+
+public class App {
+
+    public static void main( String[] args ) {
+
+        PacketHandler packetHandler = Parser.parse(args);
+
     }
+
 }

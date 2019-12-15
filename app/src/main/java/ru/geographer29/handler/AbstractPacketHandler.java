@@ -6,6 +6,7 @@ import ru.geographer29.spark.SparkPacketListener;
 import java.net.InetAddress;
 
 public abstract class AbstractPacketHandler implements PacketHandler {
+    private PcapHandle handle = null;
 
     public AbstractPacketHandler(InetAddress ipAddress) {
         PcapNetworkInterface device = null;
@@ -22,13 +23,21 @@ public abstract class AbstractPacketHandler implements PacketHandler {
             System.out.println("Device selected: " + device.getName());
         }
 
-        PcapHandle handle = null;
         try {
             int snaplen = 65536;
             int timeout = 10;
-            int packetCount = 10;
             handle = device.openLive(snaplen, PcapNetworkInterface.PromiscuousMode.NONPROMISCUOUS, timeout);
             addSettings(handle);
+        } catch (PcapNativeException e) {
+            System.out.println("Pcap library error");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        int packetCount = Integer.MAX_VALUE;
+        try {
             handle.loop(packetCount, new SparkPacketListener());
         } catch (PcapNativeException e) {
             System.out.println("Pcap library error");
@@ -37,8 +46,18 @@ public abstract class AbstractPacketHandler implements PacketHandler {
             System.out.println("Pcap loop error");
             e.printStackTrace();
         } catch (NotOpenException e) {
+            System.out.println("Unable to set settings");
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void stop() {
+        try {
+            handle.breakLoop();
+        } catch (NotOpenException e) {
+            System.out.println("Unable to break the loop");
+            e.printStackTrace();
+        }
+    }
 }

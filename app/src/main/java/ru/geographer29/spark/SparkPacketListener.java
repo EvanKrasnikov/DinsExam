@@ -8,7 +8,7 @@ public class SparkPacketListener implements PacketListener {
 
     @Override
     public void gotPacket(Packet packet) {
-        System.out.println("Package length = " + packet.length() + " bytes. Total number of packets = " + ++i);
+        //System.out.println("[" + Thread.currentThread().getName() + "] Package length = " + packet.length() + " bytes. Total number of packets = " + ++i);
     }
 
 }

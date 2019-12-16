@@ -1,26 +1,32 @@
 package ru.geographer29.handler;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.*;
 import ru.geographer29.spark.SparkPacketListener;
 
 import java.net.InetAddress;
 
 public abstract class AbstractPacketHandler implements PacketHandler {
+    private final static Logger logger = LogManager.getLogger(AbstractPacketHandler.class);
     private PcapHandle handle = null;
+
+    static {
+        BasicConfigurator.configure();
+    }
 
     public AbstractPacketHandler(InetAddress ipAddress) {
         PcapNetworkInterface device = null;
         try {
             device = Pcaps.getDevByAddress(ipAddress);
         } catch (PcapNativeException e) {
-            System.out.println("Pcap library error");
-            e.printStackTrace();
+            logger.error("Pcap library error", e);
         }
         if (device == null){
-            System.out.println("Device has not been selected");
-            throw new NullPointerException("Device has not been selected");
+            logger.error("Device has not been selected", new NullPointerException());
         } else {
-            System.out.println("Device selected: " + device.getName());
+            logger.info("Device selected: " + device.getName());
         }
 
         try {
@@ -29,8 +35,7 @@ public abstract class AbstractPacketHandler implements PacketHandler {
             handle = device.openLive(snaplen, PcapNetworkInterface.PromiscuousMode.NONPROMISCUOUS, timeout);
             addSettings(handle);
         } catch (PcapNativeException e) {
-            System.out.println("Pcap library error");
-            e.printStackTrace();
+            logger.error("Pcap library error", e);
         }
     }
 
@@ -40,14 +45,11 @@ public abstract class AbstractPacketHandler implements PacketHandler {
         try {
             handle.loop(packetCount, new SparkPacketListener());
         } catch (PcapNativeException e) {
-            System.out.println("Pcap library error");
-            e.printStackTrace();
+            logger.error("Pcap library error", e);
         } catch (InterruptedException e) {
-            System.out.println("Pcap loop error");
-            e.printStackTrace();
+            logger.error("Pcap loop error", e);
         } catch (NotOpenException e) {
-            System.out.println("Unable to set settings");
-            e.printStackTrace();
+            logger.error("Unable to set settings", e);
         }
     }
 
@@ -56,8 +58,7 @@ public abstract class AbstractPacketHandler implements PacketHandler {
         try {
             handle.breakLoop();
         } catch (NotOpenException e) {
-            System.out.println("Unable to break the loop");
-            e.printStackTrace();
+            logger.error("Unable to break the loop", e);
         }
     }
 }

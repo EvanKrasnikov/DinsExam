@@ -1,6 +1,9 @@
 package ru.geographer29.cli;
 
 import org.apache.commons.cli.*;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.PcapHandle;
 import ru.geographer29.handler.CustomPacketHandler;
 import ru.geographer29.handler.DefaultPacketHandler;
@@ -10,6 +13,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Parser {
+    private final static Logger logger = LogManager.getLogger(Parser.class);
+
+    static {
+        BasicConfigurator.configure();
+    }
 
     public static PacketHandler parse(String[] args){
         InetAddress networkInterfaceIP = InetAddress.getLoopbackAddress();
@@ -28,8 +36,7 @@ public class Parser {
         try {
             cmd = parser.parse(clOptions, args);
         } catch (ParseException e) {
-            System.out.println("Unable to parse commandline arguments");
-            e.printStackTrace();
+            logger.error("Unable to parse commandline arguments", e);
         }
 
         if (cmd.hasOption(Arguments.HELP.getValue())){
@@ -38,7 +45,7 @@ public class Parser {
         }
 
         if (!cmd.hasOption(Arguments.INTERFACE.getValue())){
-            System.out.println("'Interface' is a mandatory option");
+            logger.error ("'Interface' is a mandatory option" );
             formatter.printHelp("SparkPackageCapture", clOptions);
             System.exit(1);
         } else {
@@ -46,8 +53,7 @@ public class Parser {
             try {
                 networkInterfaceIP = InetAddress.getByName(str);
             } catch (UnknownHostException e) {
-                System.out.println("Unable to set 'interface' argument");
-                e.printStackTrace();
+                logger.error("Unable to set 'interface' argument", e);
             }
         }
 

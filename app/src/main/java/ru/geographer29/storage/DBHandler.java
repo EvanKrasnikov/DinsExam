@@ -1,9 +1,18 @@
 package ru.geographer29.storage;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 
 public class DBHandler {
+    private final static Logger logger = LogManager.getLogger(DBHandler.class);
     private Connection connection;
+
+    static {
+        BasicConfigurator.configure();
+    }
 
     public void connect(String host, int port){
         String url = "jdbc:postgresql://" + host + ":" + port + "/traffic_limits";
@@ -11,7 +20,7 @@ public class DBHandler {
         try {
             connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println("Unable to connect to database");
+            logger.error("Unable to connect to database");
             e.printStackTrace();
         }
     }
@@ -20,7 +29,7 @@ public class DBHandler {
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println("Unable to close connection");
+            logger.error("Unable to close connection");
             e.printStackTrace();
         }
     }
@@ -33,7 +42,7 @@ public class DBHandler {
         ){
             str = resultSet.getString(1);
         } catch (SQLException e) {
-            System.out.println("Unable to select element");
+            logger.error("Unable to select element");
             e.printStackTrace();
         }
         return str;
@@ -43,7 +52,7 @@ public class DBHandler {
         try (Statement statement = connection.createStatement()){
             statement.executeUpdate(query);
         } catch (SQLException e) {
-            System.out.println("Unable to update element");
+            logger.error("Unable to update element");
             e.printStackTrace();
         }
     }

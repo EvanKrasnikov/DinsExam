@@ -1,6 +1,5 @@
 package ru.geographer29.storage;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,13 +10,8 @@ public class DBHandler {
     private final static Logger logger = LogManager.getLogger(DBHandler.class);
     private Connection connection;
 
-    static {
-        BasicConfigurator.configure();
-    }
-
     public void connect(String host, int port){
         String url = "jdbc:postgresql://" + host + ":" + port + "/";
-        logger.error(url);
         Properties props = new Properties();
         props.putIfAbsent("user", "postgres");
         props.putIfAbsent("password", "password");

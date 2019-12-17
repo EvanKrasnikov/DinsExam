@@ -1,7 +1,6 @@
 package ru.geographer29.cli;
 
 import org.apache.commons.cli.*;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.PcapHandle;
@@ -14,10 +13,6 @@ import java.net.UnknownHostException;
 
 public class Parser {
     private final static Logger logger = LogManager.getLogger(Parser.class);
-
-    static {
-        BasicConfigurator.configure();
-    }
 
     public static PacketHandler parse(String[] args){
         InetAddress networkInterfaceIP = InetAddress.getLoopbackAddress();

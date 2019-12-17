@@ -1,6 +1,5 @@
 package ru.geographer29.handler;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.BpfProgram;
@@ -14,10 +13,6 @@ public class CustomPacketHandler extends AbstractPacketHandler {
     private final static Logger logger = LogManager.getLogger(CustomPacketHandler.class);
     private String filter;
     private PcapHandle.PcapDirection listeningDirection;
-
-    static {
-        BasicConfigurator.configure();
-    }
 
     public CustomPacketHandler(InetAddress networkInterfaceIP, String filter, PcapHandle.PcapDirection listeningDirection) {
         super(networkInterfaceIP);

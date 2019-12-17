@@ -32,10 +32,6 @@ public class SparkPacketListener implements PacketListener {
         }
     };
 
-    static {
-        BasicConfigurator.configure();
-    }
-
     {
         DBHandler dbHandler = new DBHandler();
         dbHandler.connect("localhost", 5432);

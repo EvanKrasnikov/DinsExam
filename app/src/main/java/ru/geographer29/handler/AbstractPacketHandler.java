@@ -1,6 +1,5 @@
 package ru.geographer29.handler;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.pcap4j.core.*;
@@ -11,10 +10,6 @@ import java.net.InetAddress;
 public abstract class AbstractPacketHandler implements PacketHandler {
     private final static Logger logger = LogManager.getLogger(AbstractPacketHandler.class);
     private PcapHandle handle = null;
-
-    static {
-        BasicConfigurator.configure();
-    }
 
     public AbstractPacketHandler(InetAddress ipAddress) {
         PcapNetworkInterface device = null;

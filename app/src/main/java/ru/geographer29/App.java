@@ -33,6 +33,7 @@ public class App {
 
         packetHandler.stop();
         System.out.println("Execution was terminated");
+        System.exit(0);
     }
 
 }

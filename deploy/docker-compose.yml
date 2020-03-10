@@ -21,16 +21,32 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   
-  kafka:
+  kafka_server:
     image: bitnami/kafka
-    container_name: kafka
+    container_name: kafka_server
     ports:
-      - 9092:9092
+      - 9091:9092
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes 
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
     depends_on:
       - zookeeper
+
+  kafka_client:
+    image: bitnami/kafka
+    container_name: kafka_client
+    ports:
+      - 9093:9092
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+    depends_on:
+      - kafka_server
+    command: kafka-topics.sh 
+      --create 
+      --zookeeper zookeeper:2181 
+      --replication-factor 1 
+      --partitions 1 
+      --topic alert
   
   app:
     image: evankrasnikov/app
@@ -38,5 +54,6 @@ services:
     depends_on:
       - postgres
       - zookeeper
-      - kafka
+      - kafka_server
+      - kafka_client
     command: tail -F /dev/null

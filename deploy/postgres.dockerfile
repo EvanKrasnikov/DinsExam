@@ -1,7 +1,5 @@
 FROM postgres:alpine
 
-COPY setup-table.sql ./
+COPY init-db.sh /docker-entrypoint-initdb.d/
 
 USER postgres
-
-ENTRYPOINT psql -f /setup-table.sql

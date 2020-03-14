@@ -24,11 +24,17 @@ public class SparkPacketListener implements PacketListener {
     private Runnable checkIfLimitsExceed = new Runnable() {
         @Override
         public void run() {
-            if (trafficAmount.get() < limitMin || trafficAmount.get() > limitMax){
-                KafkaHandler.notifyKafka();
-                logger.warn("Traffic amount exceeds limits");
-                trafficAmount.set(0);
+            int traffic = trafficAmount.getAndSet(0);
+            String msg = "";
+
+            if (traffic < limitMin){
+                msg = String.format("Traffic amount exceeds the min limit.\n Limit = %s \n Traffic = %s\n", limitMin, traffic);
+            } else if (traffic > limitMax){
+                msg = String.format("Traffic amount exceeds the max limit.\n Limit = %s \n Traffic = %s\n", limitMax, traffic);
             }
+
+            KafkaHandler.notifyKafka(msg);
+            logger.warn(msg);
         }
     };
 

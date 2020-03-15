@@ -20,10 +20,10 @@ public class Parser {
         PcapHandle.PcapDirection listeningDirection = PcapHandle.PcapDirection.INOUT;
 
         Options clOptions = new Options();
-        clOptions.addOption("i", Arguments.INTERFACE.getValue(), true, "IP address of the network interface");
-        clOptions.addOption("t", Arguments.TARGET.getValue(), true, "IP address to listen");
-        clOptions.addOption("d", Arguments.DIRECTION.getValue(), true, "Direction of the listening (IN, OUT, INOUT)");
-        clOptions.addOption("h", Arguments.HELP.getValue(), false, "Print help");
+        clOptions.addOption("i", "interface", true, "IP address of the network interface");
+        clOptions.addOption("t", "target", true, "IP address to listen");
+        clOptions.addOption("d", "direction", true, "Direction of the listening (IN, OUT, INOUT)");
+        clOptions.addOption("h", "help", false, "Print help");
 
         HelpFormatter formatter = new HelpFormatter();
         CommandLineParser parser = new DefaultParser();
@@ -34,17 +34,17 @@ public class Parser {
             logger.error("Unable to parse commandline arguments", e);
         }
 
-        if (cmd.hasOption(Arguments.HELP.getValue())){
+        if (cmd.hasOption("help")){
             formatter.printHelp("SparkPackageCapture", clOptions);
             System.exit(0);
         }
 
-        if (!cmd.hasOption(Arguments.INTERFACE.getValue())){
+        if (!cmd.hasOption("interface")){
             logger.error ("'Interface' is a mandatory option" );
             formatter.printHelp("SparkPackageCapture", clOptions);
             System.exit(1);
         } else {
-            String str = cmd.getOptionValue(Arguments.INTERFACE.getValue());
+            String str = cmd.getOptionValue("interface");
             try {
                 networkInterfaceIP = InetAddress.getByName(str);
             } catch (UnknownHostException e) {
@@ -52,16 +52,16 @@ public class Parser {
             }
         }
 
-        if (!cmd.hasOption(Arguments.TARGET.getValue()) && !cmd.hasOption(Arguments.DIRECTION.getValue())){
+        if (!cmd.hasOption("target") && !cmd.hasOption("direction")){
             return new DefaultPacketHandler(networkInterfaceIP);
         }
 
 
-        if (cmd.hasOption(Arguments.TARGET.getValue())){
-            filter = "host " + cmd.getOptionValue(Arguments.TARGET.getValue());
+        if (cmd.hasOption("target")){
+            filter = "host " + cmd.getOptionValue("target");
         }
-        if (cmd.hasOption(Arguments.DIRECTION.getValue())){
-            String str = cmd.getOptionValue(Arguments.DIRECTION.getValue());
+        if (cmd.hasOption("direction")){
+            String str = cmd.getOptionValue("direction");
             listeningDirection = PcapHandle.PcapDirection.valueOf(str);
         }
 
